@@ -10,17 +10,18 @@
     />
     <style>
       :root {
-        --ink: #17211d;
-        --body: #4d5a55;
-        --muted: #74817b;
+        --ink: #16211d;
+        --body: #52615b;
+        --muted: #71817a;
         --paper: #fbfcf8;
-        --mist: #eef5f1;
-        --line: #d8e2dc;
+        --mist: #edf4ef;
+        --line: #d9e4dd;
         --green: #17664c;
-        --green-dark: #0f4535;
-        --gold: #b48b37;
-        --coral: #bd6757;
-        --white: #ffffff;
+        --green-dark: #0e4333;
+        --gold: #b88a31;
+        --coral: #bf6b5f;
+        --white: #fff;
+        --shadow: 0 24px 70px rgba(19, 45, 34, 0.14);
       }
 
       * {
@@ -40,9 +41,13 @@
         line-height: 1.7;
       }
 
+      body.is-menu-open {
+        overflow: hidden;
+      }
+
       img {
-        max-width: 100%;
         display: block;
+        max-width: 100%;
       }
 
       a {
@@ -50,21 +55,31 @@
       }
 
       .wrap {
-        width: min(1120px, calc(100% - 40px));
+        width: min(1160px, calc(100% - 40px));
         margin: 0 auto;
+      }
+
+      .progress {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 60;
+        height: 3px;
+        transform-origin: left;
+        transform: scaleX(0);
+        background: var(--gold);
       }
 
       .topbar {
         position: fixed;
         inset: 0 0 auto;
-        z-index: 20;
+        z-index: 50;
         background: rgba(251, 252, 248, 0.9);
-        border-bottom: 1px solid rgba(216, 226, 220, 0.9);
-        backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(217, 228, 221, 0.88);
+        backdrop-filter: blur(18px);
       }
 
       .nav {
-        min-height: 66px;
+        min-height: 68px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -72,10 +87,24 @@
       }
 
       .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         font-size: 15px;
-        font-weight: 850;
+        font-weight: 900;
         text-decoration: none;
         white-space: nowrap;
+      }
+
+      .brand-mark {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        border-radius: 6px;
+        color: var(--white);
+        background: var(--green);
+        font-size: 12px;
       }
 
       .nav-links {
@@ -84,11 +113,15 @@
         gap: 22px;
         color: #394741;
         font-size: 14px;
-        font-weight: 700;
+        font-weight: 750;
       }
 
       .nav-links a {
         text-decoration: none;
+      }
+
+      .nav-links a:hover {
+        color: var(--green);
       }
 
       .btn {
@@ -96,20 +129,23 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        gap: 9px;
         padding: 0 20px;
-        border-radius: 6px;
+        border-radius: 7px;
         border: 1px solid var(--green);
         background: var(--green);
         color: var(--white);
-        font-weight: 850;
+        font-weight: 900;
         text-decoration: none;
         white-space: nowrap;
+        transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
       }
 
       .btn:hover {
+        transform: translateY(-1px);
         background: var(--green-dark);
         border-color: var(--green-dark);
+        box-shadow: 0 12px 30px rgba(14, 67, 51, 0.22);
       }
 
       .btn.light {
@@ -118,44 +154,83 @@
         border-color: var(--white);
       }
 
+      .btn.ghost {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.48);
+      }
+
+      .menu-button {
+        display: none;
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: var(--white);
+        color: var(--ink);
+        font-size: 20px;
+      }
+
       .hero {
-        min-height: 88svh;
+        min-height: 92svh;
         display: grid;
         align-items: end;
         position: relative;
         overflow: hidden;
         background-image:
-          linear-gradient(90deg, rgba(13, 26, 21, 0.86) 0%, rgba(13, 26, 21, 0.64) 37%, rgba(13, 26, 21, 0.12) 72%),
-          linear-gradient(180deg, rgba(13, 26, 21, 0.36) 0%, rgba(13, 26, 21, 0.12) 36%, rgba(13, 26, 21, 0.46) 100%),
+          linear-gradient(90deg, rgba(13, 26, 21, 0.88) 0%, rgba(13, 26, 21, 0.7) 38%, rgba(13, 26, 21, 0.18) 76%),
+          linear-gradient(180deg, rgba(13, 26, 21, 0.28) 0%, rgba(13, 26, 21, 0.1) 42%, rgba(13, 26, 21, 0.54) 100%),
           url("assets/hero-podcast-studio.png");
         background-size: cover;
         background-position: center;
         color: var(--white);
+        isolation: isolate;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0;
+        height: 160px;
+        background: linear-gradient(180deg, rgba(19, 35, 29, 0) 0%, #13231d 100%);
+        z-index: -1;
       }
 
       .hero-inner {
-        padding: 132px 0 64px;
+        padding: 132px 0 58px;
+      }
+
+      .hero-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 0.98fr) minmax(360px, 0.72fr);
+        gap: 46px;
+        align-items: end;
+      }
+
+      .eyebrow,
+      .kicker {
+        margin: 0 0 12px;
+        font-size: 13px;
+        font-weight: 900;
+        text-transform: uppercase;
       }
 
       .eyebrow {
-        margin: 0 0 14px;
         color: #cfe8da;
-        font-size: 13px;
-        font-weight: 850;
       }
 
       h1 {
         width: min(780px, 100%);
         margin: 0;
-        font-size: clamp(40px, 6vw, 76px);
+        font-size: clamp(42px, 6vw, 78px);
         line-height: 1.04;
-        font-weight: 900;
+        font-weight: 950;
       }
 
       .lead {
-        width: min(650px, 100%);
+        width: min(660px, 100%);
         margin: 22px 0 28px;
-        color: rgba(255, 255, 255, 0.86);
+        color: rgba(255, 255, 255, 0.88);
         font-size: clamp(17px, 2vw, 21px);
       }
 
@@ -167,10 +242,131 @@
       }
 
       .hero-note {
-        margin: 0;
+        margin: 16px 0 0;
         color: rgba(255, 255, 255, 0.78);
         font-size: 14px;
-        font-weight: 700;
+        font-weight: 750;
+      }
+
+      .hero-console {
+        display: grid;
+        gap: 14px;
+        align-self: center;
+      }
+
+      .signal-panel {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        background: rgba(16, 32, 27, 0.76);
+        box-shadow: 0 26px 80px rgba(0, 0, 0, 0.28);
+        backdrop-filter: blur(16px);
+        overflow: hidden;
+      }
+
+      .signal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      }
+
+      .recording {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #f8d4cd;
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .recording::before {
+        content: "";
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--coral);
+        box-shadow: 0 0 0 0 rgba(191, 107, 95, 0.65);
+        animation: pulse 1.7s ease-out infinite;
+      }
+
+      .episode-label {
+        color: rgba(255, 255, 255, 0.68);
+        font-size: 12px;
+        font-weight: 750;
+      }
+
+      .wave {
+        display: flex;
+        align-items: end;
+        gap: 5px;
+        height: 132px;
+        padding: 22px 18px;
+      }
+
+      .wave span {
+        flex: 1;
+        min-width: 5px;
+        height: var(--h);
+        border-radius: 999px;
+        background: linear-gradient(180deg, #f1d18d, #58b58c);
+        opacity: 0.9;
+        animation: wave 1.7s ease-in-out infinite;
+        animation-delay: var(--d);
+      }
+
+      .signal-foot {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        border-top: 1px solid rgba(255, 255, 255, 0.14);
+      }
+
+      .signal-foot div {
+        padding: 14px 12px;
+        border-left: 1px solid rgba(255, 255, 255, 0.14);
+      }
+
+      .signal-foot div:first-child {
+        border-left: 0;
+      }
+
+      .signal-foot b {
+        display: block;
+        color: #f1d18d;
+        font-size: 18px;
+        line-height: 1.1;
+      }
+
+      .signal-foot span {
+        color: rgba(255, 255, 255, 0.68);
+        font-size: 12px;
+      }
+
+      .floating-note {
+        width: min(280px, 78%);
+        margin-left: auto;
+        padding: 14px 16px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        color: var(--ink);
+        box-shadow: var(--shadow);
+        animation: floatNote 5s ease-in-out infinite;
+      }
+
+      .floating-note b {
+        display: block;
+        color: var(--green-dark);
+        font-size: 13px;
+      }
+
+      .floating-note span {
+        display: block;
+        margin-top: 3px;
+        color: var(--body);
+        font-size: 12px;
+        line-height: 1.5;
       }
 
       .proof-strip {
@@ -185,7 +381,7 @@
       }
 
       .proof-item {
-        padding: 22px 24px;
+        padding: 24px;
         border-left: 1px solid rgba(255, 255, 255, 0.12);
       }
 
@@ -196,19 +392,19 @@
       .proof-item b {
         display: block;
         color: #f0cf85;
-        font-size: 24px;
-        line-height: 1.15;
+        font-size: 28px;
+        line-height: 1.12;
       }
 
       .proof-item span {
         display: block;
-        margin-top: 4px;
+        margin-top: 5px;
         color: rgba(255, 255, 255, 0.72);
         font-size: 13px;
       }
 
       .section {
-        padding: 76px 0;
+        padding: 84px 0;
       }
 
       .section.alt {
@@ -226,15 +422,12 @@
       }
 
       .section-head {
-        width: min(780px, 100%);
-        margin-bottom: 34px;
+        width: min(820px, 100%);
+        margin-bottom: 36px;
       }
 
       .kicker {
-        margin: 0 0 10px;
         color: var(--green);
-        font-size: 13px;
-        font-weight: 900;
       }
 
       .section.dark .kicker {
@@ -243,13 +436,13 @@
 
       h2 {
         margin: 0;
-        font-size: clamp(30px, 4vw, 52px);
-        line-height: 1.16;
-        font-weight: 900;
+        font-size: clamp(30px, 4vw, 54px);
+        line-height: 1.14;
+        font-weight: 950;
       }
 
       .section-lead {
-        width: min(760px, 100%);
+        width: min(780px, 100%);
         margin: 18px 0 0;
         color: var(--body);
         font-size: 18px;
@@ -260,14 +453,38 @@
       .plan-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
+        gap: 18px;
       }
 
       .card {
+        position: relative;
         border: 1px solid var(--line);
         border-radius: 8px;
         background: var(--white);
-        padding: 24px;
+        padding: 26px;
+        overflow: hidden;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto;
+        height: 3px;
+        transform: scaleX(0);
+        transform-origin: left;
+        background: var(--green);
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(23, 102, 76, 0.32);
+        box-shadow: var(--shadow);
+      }
+
+      .card:hover::before {
+        transform: scaleX(1);
       }
 
       .card h3 {
@@ -284,8 +501,8 @@
       .number {
         display: inline-grid;
         place-items: center;
-        width: 34px;
-        height: 34px;
+        width: 36px;
+        height: 36px;
         margin-bottom: 18px;
         border-radius: 50%;
         background: #dff0e8;
@@ -297,34 +514,58 @@
       .split {
         display: grid;
         grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
-        gap: 44px;
+        gap: 48px;
         align-items: start;
       }
 
       .timeline {
         display: grid;
-        gap: 14px;
+        gap: 0;
+        position: relative;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 30px;
+        width: 2px;
+        height: 100%;
+        background: rgba(23, 102, 76, 0.16);
+      }
+
+      .section.dark .timeline::before {
+        background: rgba(255, 255, 255, 0.14);
       }
 
       .step {
         display: grid;
         grid-template-columns: 62px 1fr;
         gap: 18px;
-        padding: 20px 0;
-        border-top: 1px solid rgba(23, 33, 29, 0.12);
-      }
-
-      .section.dark .step {
-        border-color: rgba(255, 255, 255, 0.14);
+        padding: 21px 0;
+        position: relative;
       }
 
       .step b {
+        width: 62px;
+        height: 38px;
+        display: grid;
+        place-items: center;
+        position: relative;
+        z-index: 1;
+        border: 1px solid rgba(184, 138, 49, 0.34);
+        border-radius: 999px;
+        background: var(--paper);
         color: var(--gold);
-        font-size: 18px;
+        font-size: 15px;
+      }
+
+      .section.dark .step b {
+        background: #13231d;
       }
 
       .step h3 {
-        margin: 0 0 4px;
+        margin: 0 0 5px;
         font-size: 20px;
       }
 
@@ -337,6 +578,7 @@
         overflow-x: auto;
         border: 1px solid rgba(255, 255, 255, 0.14);
         border-radius: 8px;
+        background: rgba(255, 255, 255, 0.035);
       }
 
       table {
@@ -375,6 +617,16 @@
         box-shadow: 0 22px 60px rgba(21, 71, 53, 0.12);
       }
 
+      .plan.featured::after {
+        content: "Recommended";
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        color: rgba(23, 102, 76, 0.22);
+        font-size: 12px;
+        font-weight: 900;
+      }
+
       .badge {
         display: inline-flex;
         margin-bottom: 12px;
@@ -388,9 +640,9 @@
 
       .price {
         margin: 16px 0;
-        font-size: 34px;
+        font-size: 36px;
         line-height: 1;
-        font-weight: 900;
+        font-weight: 950;
       }
 
       .price small {
@@ -408,6 +660,34 @@
         margin-top: 8px;
       }
 
+      .client-flow {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 26px;
+      }
+
+      .flow-card {
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.66);
+      }
+
+      .flow-card b {
+        display: block;
+        color: var(--green);
+        font-size: 22px;
+      }
+
+      .flow-card span {
+        display: block;
+        margin-top: 4px;
+        color: var(--body);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
       .faq {
         display: grid;
         grid-template-columns: minmax(0, 0.85fr) minmax(320px, 1.15fr);
@@ -415,7 +695,7 @@
       }
 
       details {
-        padding: 18px 0;
+        padding: 19px 0;
         border-top: 1px solid var(--line);
       }
 
@@ -425,8 +705,25 @@
 
       summary {
         cursor: pointer;
-        font-weight: 850;
+        font-weight: 900;
         font-size: 18px;
+        list-style: none;
+      }
+
+      summary::-webkit-details-marker {
+        display: none;
+      }
+
+      summary::after {
+        content: "+";
+        float: right;
+        color: var(--green);
+        font-size: 24px;
+        line-height: 1;
+      }
+
+      details[open] summary::after {
+        content: "-";
       }
 
       details p {
@@ -435,9 +732,21 @@
       }
 
       .cta-band {
-        padding: 70px 0;
+        padding: 76px 0;
         background: var(--green-dark);
         color: var(--white);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cta-band::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: 44px 44px;
+        opacity: 0.32;
       }
 
       .cta-inner {
@@ -445,12 +754,44 @@
         grid-template-columns: minmax(0, 1fr) auto;
         gap: 32px;
         align-items: center;
+        position: relative;
       }
 
       .cta-inner p {
         margin: 14px 0 0;
         color: rgba(255, 255, 255, 0.76);
         font-size: 18px;
+      }
+
+      .sticky-cta {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        z-index: 45;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        max-width: min(420px, calc(100% - 36px));
+        padding: 12px 12px 12px 16px;
+        border: 1px solid rgba(23, 102, 76, 0.2);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.94);
+        box-shadow: var(--shadow);
+        transform: translateY(120%);
+        opacity: 0;
+        transition: transform 0.28s ease, opacity 0.28s ease;
+        backdrop-filter: blur(14px);
+      }
+
+      .sticky-cta.is-visible {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .sticky-cta span {
+        color: var(--body);
+        font-size: 13px;
+        font-weight: 750;
       }
 
       footer {
@@ -460,19 +801,98 @@
         font-size: 13px;
       }
 
-      @media (max-width: 900px) {
+      .reveal {
+        opacity: 0;
+        transform: translateY(22px);
+        transition: opacity 0.65s ease, transform 0.65s ease;
+      }
+
+      .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(191, 107, 95, 0.65);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(191, 107, 95, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(191, 107, 95, 0);
+        }
+      }
+
+      @keyframes wave {
+        0%,
+        100% {
+          transform: scaleY(0.58);
+        }
+        50% {
+          transform: scaleY(1);
+        }
+      }
+
+      @keyframes floatNote {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @media (max-width: 960px) {
         .nav-links {
           display: none;
         }
 
+        .menu-button {
+          display: inline-grid;
+          place-items: center;
+        }
+
+        .topbar .nav > .btn {
+          display: none;
+        }
+
+        .nav-links.is-open {
+          position: fixed;
+          inset: 68px 14px auto;
+          display: grid;
+          gap: 0;
+          padding: 8px;
+          border: 1px solid var(--line);
+          border-radius: 8px;
+          background: var(--white);
+          box-shadow: var(--shadow);
+        }
+
+        .nav-links.is-open a {
+          padding: 14px;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .nav-links.is-open a:last-child {
+          border-bottom: 0;
+        }
+
+        .hero-layout,
         .proof-grid,
         .problem-grid,
         .deliver-grid,
         .plan-grid,
         .split,
         .faq,
-        .cta-inner {
+        .cta-inner,
+        .client-flow {
           grid-template-columns: 1fr;
+        }
+
+        .hero-console {
+          width: min(460px, 100%);
         }
 
         .proof-item {
@@ -485,74 +905,171 @@
         }
 
         .hero {
-          min-height: 84svh;
+          min-height: auto;
           background-position: 60% center;
         }
 
         .hero-inner {
-          padding: 110px 0 46px;
+          padding: 112px 0 48px;
         }
 
         .section {
-          padding: 58px 0;
+          padding: 60px 0;
+        }
+
+        .cta-inner .btn {
+          width: 100%;
         }
       }
 
       @media (max-width: 560px) {
         .wrap {
-          width: min(100% - 28px, 1120px);
+          width: min(100% - 28px, 1160px);
         }
 
         .brand {
           white-space: normal;
         }
 
-        .topbar .btn {
-          min-height: 40px;
-          padding: 0 12px;
-          font-size: 13px;
-        }
-
         .hero-actions .btn {
           width: 100%;
         }
 
+        .signal-foot {
+          grid-template-columns: 1fr;
+        }
+
+        .signal-foot div {
+          border-left: 0;
+          border-top: 1px solid rgba(255, 255, 255, 0.14);
+        }
+
+        .signal-foot div:first-child {
+          border-top: 0;
+        }
+
         .step {
-          grid-template-columns: 44px 1fr;
+          grid-template-columns: 54px 1fr;
+        }
+
+        .timeline::before {
+          left: 26px;
+        }
+
+        .step b {
+          width: 54px;
+          font-size: 13px;
+        }
+
+        .sticky-cta {
+          left: 14px;
+          right: 14px;
+          display: grid;
+          grid-template-columns: 1fr;
+        }
+
+        .sticky-cta .btn {
+          width: 100%;
         }
 
         table {
           min-width: 680px;
         }
       }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+          transition-duration: 0.001ms !important;
+        }
+
+        .reveal {
+          opacity: 1;
+          transform: none;
+        }
+      }
     </style>
   </head>
   <body>
+    <div class="progress" aria-hidden="true"></div>
     <header class="topbar">
       <nav class="wrap nav" aria-label="主要ナビゲーション">
-        <a class="brand" href="#">Z Talent Podcast Studio</a>
-        <div class="nav-links">
+        <a class="brand" href="#">
+          <span class="brand-mark">ZT</span>
+          <span>Z Talent Podcast Studio</span>
+        </a>
+        <div class="nav-links" id="navLinks">
           <a href="#value">選ばれる理由</a>
           <a href="#service">内容</a>
           <a href="#pricing">料金</a>
           <a href="#faq">FAQ</a>
         </div>
         <a class="btn" href="#contact">3分所感を依頼</a>
+        <button class="menu-button" type="button" aria-controls="navLinks" aria-expanded="false">☰</button>
       </nav>
     </header>
 
     <main>
       <section class="hero" aria-label="ビデオPodcast運用代行">
         <div class="wrap hero-inner">
-          <p class="eyebrow">専門相談業・高単価サービス向け ビデオPodcast運用代行</p>
-          <h1>商談前の「少し怪しい」を、代表の声で安心に変える。</h1>
-          <p class="lead">
-            企画、収録、編集、配信、ショート化、商談前に送れる導線まで。
-            再生数づくりではなく、問い合わせ前の不安を減らすためのPodcastを運用します。
-          </p>
-          <div class="hero-actions">
-            <a class="btn light" href="#contact">3分所感を依頼する</a>
-            <p class="hero-note">先行10社限定 / 月15万円から / 最短2週間で初回収録</p>
+          <div class="hero-layout">
+            <div class="reveal">
+              <p class="eyebrow">専門相談業・高単価サービス向け ビデオPodcast運用代行</p>
+              <h1>商談前の「少し怪しい」を、代表の声で安心に変える。</h1>
+              <p class="lead">
+                企画、収録、編集、配信、ショート化、商談前に送れる導線まで。
+                再生数づくりではなく、問い合わせ前の不安を減らすためのPodcastを運用します。
+              </p>
+              <div class="hero-actions">
+                <a class="btn light" href="#contact">3分所感を依頼する</a>
+                <a class="btn ghost" href="#pricing">料金を見る</a>
+              </div>
+              <p class="hero-note">先行10社限定 / 月15万円から / 最短2週間で初回収録</p>
+            </div>
+            <div class="hero-console reveal" aria-label="Podcast運用イメージ">
+              <div class="signal-panel">
+                <div class="signal-head">
+                  <span class="recording">RECORDING</span>
+                  <span class="episode-label">Episode 01 / 相談前の不安</span>
+                </div>
+                <div class="wave" aria-hidden="true">
+                  <span style="--h:48%;--d:-0.1s"></span>
+                  <span style="--h:82%;--d:-0.4s"></span>
+                  <span style="--h:34%;--d:-0.7s"></span>
+                  <span style="--h:76%;--d:-0.2s"></span>
+                  <span style="--h:58%;--d:-0.55s"></span>
+                  <span style="--h:92%;--d:-0.25s"></span>
+                  <span style="--h:42%;--d:-0.8s"></span>
+                  <span style="--h:68%;--d:-0.35s"></span>
+                  <span style="--h:88%;--d:-0.6s"></span>
+                  <span style="--h:52%;--d:-0.15s"></span>
+                  <span style="--h:72%;--d:-0.5s"></span>
+                  <span style="--h:38%;--d:-0.9s"></span>
+                </div>
+                <div class="signal-foot">
+                  <div>
+                    <b>本編</b>
+                    <span>YouTube / Spotify</span>
+                  </div>
+                  <div>
+                    <b>短尺</b>
+                    <span>Shorts / Reels</span>
+                  </div>
+                  <div>
+                    <b>送付文</b>
+                    <span>LINE / DM / 商談前</span>
+                  </div>
+                </div>
+              </div>
+              <div class="floating-note">
+                <b>次回テーマ候補</b>
+                <span>「費用が後から増えないか不安な方へ」→ 商談前LINEに差し込み</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -560,15 +1077,15 @@
       <section class="proof-strip" aria-label="主要指標">
         <div class="wrap proof-grid">
           <div class="proof-item">
-            <b>月2〜4本</b>
+            <b><span class="count" data-target="4">0</span>本/月</b>
             <span>代表・担当者のビデオPodcastを継続制作</span>
           </div>
           <div class="proof-item">
-            <b>1収録</b>
+            <b><span class="count" data-target="1">0</span>収録</b>
             <span>本編、ショート、記事、営業返信文へ展開</span>
           </div>
           <div class="proof-item">
-            <b>15万円〜</b>
+            <b><span class="count" data-target="15">0</span>万円〜</b>
             <span>先行導入プラン。標準は月25万円</span>
           </div>
           <div class="proof-item">
@@ -580,7 +1097,7 @@
 
       <section class="section" id="value">
         <div class="wrap">
-          <div class="section-head">
+          <div class="section-head reveal">
             <p class="kicker">WHY IT WORKS</p>
             <h2>Podcastを作るだけでは、売上にはつながりません。</h2>
             <p class="section-lead">
@@ -588,17 +1105,17 @@
             </p>
           </div>
           <div class="problem-grid">
-            <article class="card">
+            <article class="card reveal">
               <span class="number">01</span>
               <h3>料金への不信を先にほどく</h3>
               <p>高単価サービスは、問い合わせ前に「後から高くなりそう」と見られます。料金の考え方を代表の言葉で残します。</p>
             </article>
-            <article class="card">
+            <article class="card reveal">
               <span class="number">02</span>
               <h3>対応範囲の曖昧さを消す</h3>
               <p>できること、できないこと、断る相談の基準を明確にすることで、相談前の迷いを減らします。</p>
             </article>
-            <article class="card">
+            <article class="card reveal">
               <span class="number">03</span>
               <h3>紹介・DM後の信頼材料にする</h3>
               <p>営業文だけでは伝わらない人柄、姿勢、顧客理解を、商談前に見てもらえる資産にします。</p>
@@ -609,7 +1126,7 @@
 
       <section class="section alt">
         <div class="wrap split">
-          <div class="section-head">
+          <div class="section-head reveal">
             <p class="kicker">POSITIONING</p>
             <h2>制作会社ではなく、商談前安心化の運用代行。</h2>
             <p class="section-lead">
@@ -617,28 +1134,28 @@
             </p>
           </div>
           <div class="timeline">
-            <div class="step">
+            <div class="step reveal">
               <b>01</b>
               <div>
                 <h3>不安と反論を棚卸し</h3>
                 <p>「費用」「相談後の流れ」「失敗しない選び方」など、問い合わせ前に詰まる論点を洗い出します。</p>
               </div>
             </div>
-            <div class="step">
+            <div class="step reveal">
               <b>02</b>
               <div>
                 <h3>代表の言葉に変換</h3>
                 <p>原稿を読ませるのではなく、普段の説明・商談トークから自然な番組テーマへ落とします。</p>
               </div>
             </div>
-            <div class="step">
+            <div class="step reveal">
               <b>03</b>
               <div>
                 <h3>営業導線へ接続</h3>
                 <p>LP、問い合わせ返信、LINE、商談前メールに貼れる短尺動画と返信文まで作ります。</p>
               </div>
             </div>
-            <div class="step">
+            <div class="step reveal">
               <b>04</b>
               <div>
                 <h3>失注理由から改善</h3>
@@ -651,7 +1168,7 @@
 
       <section class="section" id="service">
         <div class="wrap">
-          <div class="section-head">
+          <div class="section-head reveal">
             <p class="kicker">DELIVERABLES</p>
             <h2>社長は話すだけ。営業で使える形まで納品します。</h2>
             <p class="section-lead">
@@ -659,44 +1176,62 @@
             </p>
           </div>
           <div class="deliver-grid">
-            <article class="card">
+            <article class="card reveal">
               <h3>番組企画・質問設計</h3>
               <p>業界の不安、顧客の迷い、営業でよく聞かれる質問からテーマを設計します。</p>
             </article>
-            <article class="card">
+            <article class="card reveal">
               <h3>収録・ディレクション</h3>
               <p>代表や担当者の自然な言葉を引き出し、動画Podcastとして見やすい会話に整えます。</p>
             </article>
-            <article class="card">
+            <article class="card reveal">
               <h3>本編編集</h3>
               <p>長尺でも見やすい構成にし、問い合わせ前の理解を深める本編コンテンツを制作します。</p>
             </article>
-            <article class="card">
+            <article class="card reveal">
               <h3>ショート動画化</h3>
               <p>YouTube Shorts、TikTok、Reelsで使える短尺を切り出し、認知と営業導線の両方に使います。</p>
             </article>
-            <article class="card">
+            <article class="card reveal">
               <h3>記事・投稿文作成</h3>
               <p>X、note、ブログ、採用ページに転用できる要約文と投稿文を作ります。</p>
             </article>
-            <article class="card">
+            <article class="card reveal">
               <h3>商談前送付導線</h3>
               <p>問い合わせ返信やLINEで送れる動画リンク、説明文、FAQ導線まで整えます。</p>
             </article>
+          </div>
+          <div class="client-flow reveal" aria-label="展開先">
+            <div class="flow-card">
+              <b>LP</b>
+              <span>料金・対応範囲の不安を先に処理</span>
+            </div>
+            <div class="flow-card">
+              <b>LINE</b>
+              <span>相談前に動画リンクを送付</span>
+            </div>
+            <div class="flow-card">
+              <b>DM</b>
+              <span>営業文の信頼材料として添付</span>
+            </div>
+            <div class="flow-card">
+              <b>商談</b>
+              <span>初回面談前の説明コストを削減</span>
+            </div>
           </div>
         </div>
       </section>
 
       <section class="section dark">
         <div class="wrap">
-          <div class="section-head">
+          <div class="section-head reveal">
             <p class="kicker">COMPETITOR VIEW</p>
             <h2>競合が強いからこそ、戦う場所を変えます。</h2>
             <p class="section-lead">
               大手・専業スタジオは、制作品質や配信体制に強い。Z Talentはそこに加えて、営業現場で使える安心材料化まで担います。
             </p>
           </div>
-          <div class="comparison">
+          <div class="comparison reveal">
             <table>
               <thead>
                 <tr>
@@ -734,7 +1269,7 @@
 
       <section class="section" id="pricing">
         <div class="wrap">
-          <div class="section-head">
+          <div class="section-head reveal">
             <p class="kicker">PRICING</p>
             <h2>競合相場を踏まえ、安売りではなく導入しやすく。</h2>
             <p class="section-lead">
@@ -742,7 +1277,7 @@
             </p>
           </div>
           <div class="plan-grid">
-            <article class="card plan">
+            <article class="card plan reveal">
               <span class="badge">先行10社</span>
               <h3>モニター</h3>
               <div class="price">15万円 <small>/ 月</small></div>
@@ -754,7 +1289,7 @@
                 <li>3ヶ月契約</li>
               </ul>
             </article>
-            <article class="card plan featured">
+            <article class="card plan featured reveal">
               <span class="badge">推奨</span>
               <h3>標準運用</h3>
               <div class="price">25万円 <small>/ 月</small></div>
@@ -766,7 +1301,7 @@
                 <li>月次テーマ改善</li>
               </ul>
             </article>
-            <article class="card plan">
+            <article class="card plan reveal">
               <span class="badge">高単価業界</span>
               <h3>安心化プレミアム</h3>
               <div class="price">35万円 <small>/ 月</small></div>
@@ -784,7 +1319,7 @@
 
       <section class="section alt">
         <div class="wrap split">
-          <div class="section-head">
+          <div class="section-head reveal">
             <p class="kicker">PROCESS</p>
             <h2>初回相談から2週間で、最初の安心材料を作ります。</h2>
             <p class="section-lead">
@@ -792,28 +1327,28 @@
             </p>
           </div>
           <div class="timeline">
-            <div class="step">
+            <div class="step reveal">
               <b>Day 1</b>
               <div>
                 <h3>3分所感</h3>
                 <p>貴社LPや問い合わせ導線を見て、相談前に不安が残る箇所を短く返します。</p>
               </div>
             </div>
-            <div class="step">
+            <div class="step reveal">
               <b>Day 3</b>
               <div>
                 <h3>テーマ設計</h3>
                 <p>最初に作るべきエピソード、ショート、送付文を決めます。</p>
               </div>
             </div>
-            <div class="step">
+            <div class="step reveal">
               <b>Day 7</b>
               <div>
                 <h3>初回収録</h3>
                 <p>代表・担当者の普段の説明を、聞き手が引き出します。</p>
               </div>
             </div>
-            <div class="step">
+            <div class="step reveal">
               <b>Day 14</b>
               <div>
                 <h3>納品・導線化</h3>
@@ -826,12 +1361,12 @@
 
       <section class="section" id="faq">
         <div class="wrap faq">
-          <div class="section-head">
+          <div class="section-head reveal">
             <p class="kicker">FAQ</p>
             <h2>よくある質問</h2>
             <p class="section-lead">導入前に確認されやすい内容です。</p>
           </div>
-          <div>
+          <div class="reveal">
             <details>
               <summary>Podcastをやったことがなくても大丈夫ですか？</summary>
               <p>大丈夫です。話す内容は、普段の商談や問い合わせ対応から一緒に整理します。</p>
@@ -854,20 +1389,99 @@
 
       <section class="cta-band" id="contact">
         <div class="wrap cta-inner">
-          <div>
+          <div class="reveal">
             <p class="kicker">CONTACT</p>
             <h2>まずは貴社LPを見て、3分所感を送ります。</h2>
             <p>相談前に不安が残る箇所と、最初に作るべきPodcastテーマを短く返します。</p>
           </div>
-          <a class="btn light" href="mailto:info@example.com?subject=Podcast%E9%81%8B%E7%94%A8%E4%BB%A3%E8%A1%8C%E3%81%AE3%E5%88%86%E6%89%80%E6%84%9F%E4%BE%9D%E9%A0%BC">メールで依頼する</a>
+          <a class="btn light reveal" href="mailto:info@example.com?subject=Podcast%E9%81%8B%E7%94%A8%E4%BB%A3%E8%A1%8C%E3%81%AE3%E5%88%86%E6%89%80%E6%84%9F%E4%BE%9D%E9%A0%BC">メールで依頼する</a>
         </div>
       </section>
     </main>
+
+    <aside class="sticky-cta" aria-label="固定CTA">
+      <span>LPを見た後の離脱を減らす、最初の3分所感から。</span>
+      <a class="btn" href="#contact">依頼する</a>
+    </aside>
 
     <footer>
       <div class="wrap">
         株式会社Zタレント｜ビデオPodcast運用代行。違法行為、反社会的勢力との関係が疑われる案件はお受けできません。
       </div>
     </footer>
+
+    <script>
+      const progress = document.querySelector(".progress");
+      const stickyCta = document.querySelector(".sticky-cta");
+      const menuButton = document.querySelector(".menu-button");
+      const navLinks = document.querySelector("#navLinks");
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      function updateScrollState() {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const ratio = max > 0 ? window.scrollY / max : 0;
+        progress.style.transform = `scaleX(${Math.max(0, Math.min(1, ratio))})`;
+        stickyCta.classList.toggle("is-visible", window.scrollY > window.innerHeight * 0.72);
+      }
+
+      window.addEventListener("scroll", updateScrollState, { passive: true });
+      updateScrollState();
+
+      menuButton.addEventListener("click", () => {
+        const isOpen = navLinks.classList.toggle("is-open");
+        document.body.classList.toggle("is-menu-open", isOpen);
+        menuButton.setAttribute("aria-expanded", String(isOpen));
+      });
+
+      navLinks.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          navLinks.classList.remove("is-open");
+          document.body.classList.remove("is-menu-open");
+          menuButton.setAttribute("aria-expanded", "false");
+        });
+      });
+
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.16 }
+      );
+
+      document.querySelectorAll(".reveal").forEach((el) => {
+        if (prefersReducedMotion) {
+          el.classList.add("is-visible");
+        } else {
+          revealObserver.observe(el);
+        }
+      });
+
+      const countObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            const target = Number(el.dataset.target || 0);
+            const duration = prefersReducedMotion ? 1 : 900;
+            const start = performance.now();
+            const tick = (now) => {
+              const progress = Math.min(1, (now - start) / duration);
+              el.textContent = Math.round(target * progress).toString();
+              if (progress < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+            countObserver.unobserve(el);
+          });
+        },
+        { threshold: 0.6 }
+      );
+
+      document.querySelectorAll(".count").forEach((el) => countObserver.observe(el));
+    </script>
   </body>
 </html>
